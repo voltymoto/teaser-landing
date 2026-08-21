@@ -1,0 +1,4 @@
+# Volty teaser, pre-launch
+# Anything not found falls back to the teaser instead of a 404.
+# Netlify only applies this when no real file matches the path.
+/*    /    302

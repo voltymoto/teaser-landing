@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /$
+Disallow: /business-plan.html
+Disallow: /financials.html
+Disallow: /fleet-economics.html
+Disallow: /fleet-tco.html
+
+Sitemap: https://volty.info/sitemap.xml
