@@ -122,8 +122,9 @@ section{padding:clamp(80px,12vh,150px) var(--gut);position:relative}
 .stage{position:relative;border:1px solid var(--line);background:#08080a;overflow:hidden;cursor:crosshair;touch-action:pan-y}
 .stage .layer{position:absolute;inset:0;display:grid;place-items:center;padding:3% 4%}
 .stage .layer img{width:100%;height:auto;user-select:none;-webkit-user-drag:none}
-.art-hot img{filter:none}
-.art-dim{opacity:.10}
+.art-hot img{filter:drop-shadow(0 0 7px rgba(226,35,26,.55))}
+.art-body{opacity:.48}
+.art-dim{opacity:.16}
 .art-hot{
   -webkit-mask-image:radial-gradient(circle var(--r) at var(--mx) var(--my),#000 0%,#000 38%,rgba(0,0,0,.35) 62%,transparent 80%);
   mask-image:radial-gradient(circle var(--r) at var(--mx) var(--my),#000 0%,#000 38%,rgba(0,0,0,.35) 62%,transparent 80%);
@@ -237,8 +238,9 @@ footer .tag{line-height:2}
   </div>
 
   <div class="stage rv" id="stage">
-    <div class="layer art-dim"><img src="volty-u1-dim.webp" alt="" decoding="async"></div>
-    <div class="layer art-hot" aria-hidden="true"><img src="volty-u1.webp" alt="Volty U1" decoding="async"></div>
+    <div class="layer art-body"><img src="volty-u1-body.webp" alt="" decoding="async"></div>
+    <div class="layer art-dim"><img src="volty-u1-trace.webp" alt="" decoding="async"></div>
+    <div class="layer art-hot" aria-hidden="true"><img src="volty-u1-trace.webp" alt="Volty U1 outline" decoding="async"></div>
     <svg class="spacer" viewBox="0 0 1000 553" aria-hidden="true"></svg>
   </div>
 
