@@ -8,6 +8,10 @@
 <meta property="og:title" content="Volty U1 | NUEN MOTO">
 <meta property="og:description" content="An electric utility motorcycle built for the people who ride for a living. 4 September 2026.">
 <meta name="theme-color" content="#0a0a0b">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="canonical" href="https://volty.info/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://volty.info/">
@@ -17,6 +21,8 @@
 <meta property="og:image" content="https://volty.info/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="Volty U1, an electric utility motorcycle by NUEN MOTO">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://volty.info/og.png">
 
@@ -115,10 +121,10 @@ section{padding:clamp(80px,12vh,150px) var(--gut);position:relative}
 /* ---------- torch reveal ---------- */
 .stage{position:relative;border:1px solid var(--line);background:#08080a;overflow:hidden;cursor:crosshair;touch-action:pan-y}
 .stage .layer{position:absolute;inset:0;display:grid;place-items:center;padding:3% 4%}
-.stage .layer svg{width:100%;height:auto}
-.art-dim{opacity:.085}
+.stage .layer img{width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+.art-hot img{filter:none}
+.art-dim{opacity:.10}
 .art-hot{
-  color:var(--red);
   -webkit-mask-image:radial-gradient(circle var(--r) at var(--mx) var(--my),#000 0%,#000 38%,rgba(0,0,0,.35) 62%,transparent 80%);
   mask-image:radial-gradient(circle var(--r) at var(--mx) var(--my),#000 0%,#000 38%,rgba(0,0,0,.35) 62%,transparent 80%);
 }
@@ -231,54 +237,9 @@ footer .tag{line-height:2}
   </div>
 
   <div class="stage rv" id="stage">
-    <div class="layer art-dim" id="artDim">
-      <svg viewBox="0 0 1000 480" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Volty U1 outline">
-        <g stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="ink">
-          <circle cx="252" cy="356" r="88" pathLength="1"/>
-          <circle cx="252" cy="356" r="44" pathLength="1"/>
-          <circle cx="252" cy="356" r="10" pathLength="1"/>
-          <path d="M252 312 V400" pathLength="1"/>
-          <path d="M208 356 H296" pathLength="1"/>
-          <path d="M221 325 L283 387" pathLength="1"/>
-          <path d="M283 325 L221 387" pathLength="1"/>
-          <circle cx="770" cy="356" r="88" pathLength="1"/>
-          <circle cx="770" cy="356" r="44" pathLength="1"/>
-          <circle cx="770" cy="356" r="10" pathLength="1"/>
-          <path d="M770 312 V400" pathLength="1"/>
-          <path d="M726 356 H814" pathLength="1"/>
-          <path d="M739 325 L801 387" pathLength="1"/>
-          <path d="M801 325 L739 387" pathLength="1"/>
-          <path d="M424 322 H612 V342 H424 Z" pathLength="1"/>
-          <path d="M424 322 V254 H612 V322" pathLength="1"/>
-          <path d="M424 276 H612" pathLength="1"/>
-          <path d="M424 299 H612" pathLength="1"/>
-          <path d="M518 254 V322" pathLength="1"/>
-          <path d="M318 236 H620 V254 H318 Z" pathLength="1"/>
-          <path d="M138 200 H330 V218 H138 Z" pathLength="1"/>
-          <path d="M138 200 V176 H330 V200" pathLength="1"/>
-          <path d="M162 218 L188 262" pathLength="1"/>
-          <path d="M312 218 V236" pathLength="1"/>
-          <path d="M318 254 L286 316" pathLength="1"/>
-          <path d="M286 316 L252 356" pathLength="1"/>
-          <path d="M612 254 L648 198" pathLength="1"/>
-          <path d="M648 198 L710 186 L718 222 L656 236 Z" pathLength="1"/>
-          <path d="M628 238 L692 152" pathLength="1"/>
-          <path d="M642 146 H746" pathLength="1"/>
-          <path d="M652 140 V152" pathLength="1"/>
-          <path d="M736 140 V152" pathLength="1"/>
-          <path d="M694 178 L744 262 L770 356" pathLength="1"/>
-          <path d="M716 174 L766 258" pathLength="1"/>
-          <path d="M690 318 Q770 224 850 318" pathLength="1"/>
-          <circle cx="596" cy="240" r="7" pathLength="1"/>
-          <path d="M358 314 H396" pathLength="1"/>
-          <path d="M436 348 H474" pathLength="1"/>
-          <path d="M436 340 L410 404 H452" pathLength="1"/>
-          <path d="M60 448 H940" stroke-dasharray="2 12" pathLength="1"/>
-        </g>
-      </svg>
-    </div>
-    <div class="layer art-hot" id="artHot" aria-hidden="true"></div>
-    <svg class="spacer" viewBox="0 0 1000 480" aria-hidden="true"></svg>
+    <div class="layer art-dim"><img src="volty-u1-dim.webp" alt="" decoding="async"></div>
+    <div class="layer art-hot" aria-hidden="true"><img src="volty-u1.webp" alt="Volty U1" decoding="async"></div>
+    <svg class="spacer" viewBox="0 0 1000 553" aria-hidden="true"></svg>
   </div>
 
   <div class="stagefoot rv">
@@ -452,8 +413,6 @@ window.addEventListener("pointerleave", function(){ hasPointer = false; });
 
 /* ---------- torch reveal ---------- */
 var stage = document.getElementById("stage");
-document.getElementById("artHot").innerHTML = document.getElementById("artDim").innerHTML;
-
 function torch(xPct, yPct, radius){
   stage.style.setProperty("--mx", xPct + "%");
   stage.style.setProperty("--my", yPct + "%");
@@ -481,22 +440,16 @@ stage.addEventListener("pointermove", fromEvent);
 stage.addEventListener("pointerdown", fromEvent);
 stage.addEventListener("pointerleave", function(){ autoTorch = true; tStart = performance.now(); });
 
-var inkDone = false;
+var stageShown = false;
 new IntersectionObserver(function(es){
   es.forEach(function(e){
-    if(!e.isIntersecting || inkDone || reduce) return;
-    inkDone = true;
-    var paths = stage.querySelectorAll(".ink > *");
-    for(var i=0;i<paths.length;i++){
-      var pth = paths[i];
-      pth.style.strokeDasharray = "1";
-      pth.style.strokeDashoffset = "1";
-      pth.style.transition = "stroke-dashoffset 1.1s cubic-bezier(.2,.7,.2,1) " + (i*0.045) + "s";
-      void pth.getBoundingClientRect();
-      pth.style.strokeDashoffset = "0";
-    }
+    if(!e.isIntersecting || stageShown) return;
+    stageShown = true;
+    stage.style.transition = "opacity 1.1s ease";
+    stage.style.opacity = "1";
   });
-}, {threshold:.25}).observe(stage);
+}, {threshold:.2}).observe(stage);
+if(!reduce) stage.style.opacity = "0";
 
 /* ---------- signup sheet ---------- */
 var sheet    = document.getElementById("sheet");
