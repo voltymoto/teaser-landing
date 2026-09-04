@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Volty U1 | NUEN MOTO</title>
-<meta name="description" content="Volty U1. An electric utility motorcycle built for the people who ride for a living. 4 September 2026.">
+<meta name="description" content="Volty U1. An electric utility motorcycle built for the people who ride for a living, from NUEN MOTO. 200 kg payload, removable batteries, battery swap under two minutes.">
 <meta property="og:title" content="Volty U1 | NUEN MOTO">
-<meta property="og:description" content="An electric utility motorcycle built for the people who ride for a living. 4 September 2026.">
+<meta property="og:description" content="200 kg payload. 140 to 160 km loaded. Battery swap under two minutes.">
 <meta name="theme-color" content="#0a0a0b">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -28,7 +28,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800&family=Sora:wght@200;300;400;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500&family=Saira+Condensed:wght@600;700;800&family=Sora:wght@200;300;400;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
 /* Name Smile by Chequered Ink. Wordmark only. Commercial license required, see chequered.ink/font-license */
@@ -47,6 +47,21 @@
   --mono:"JetBrains Mono",ui-monospace,monospace;
   --gut:clamp(20px,5vw,72px);
 }
+/* JetBrains Mono carries no Vietnamese subset. Tone marks live in U+1EA0 to
+   U+1EF9, so on the VI locale the browser splits words across fallback fonts
+   and the marks detach: "thu" renders with a stray mark instead of "thu"
+   with its own. Every small label on the page uses --mono, so the whole
+   VI locale looked broken. Be Vietnam Pro is the NUEN MOTO parent-brand face
+   and has full coverage. Do not remove this override. */
+html[data-lang="vi"]{
+  --mono:"Be Vietnam Pro",system-ui,sans-serif;
+}
+html[data-lang="vi"] .tag,
+html[data-lang="vi"] .unit .st,
+html[data-lang="vi"] .unit .l,
+html[data-lang="vi"] .perk,
+html[data-lang="vi"] .note,
+html[data-lang="vi"] .f label{letter-spacing:.09em}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
@@ -108,20 +123,35 @@ nav{
 .hero h1 em{font-style:normal;color:var(--red)}
 .hero .lede{max-width:52ch}
 
-/* ---------- countdown ---------- */
+/* ---------- build state strip ----------
+   This replaced a countdown to 04.09.2026. A clock makes a promise that
+   expires; on the morning it runs out the page reads 00 00 00 00 to every
+   visitor and cites the "ceased operations" story for the reader. A state
+   strip carries the same urgency and stays true on any day it is loaded. */
 .clockwrap{position:relative;z-index:2;padding:clamp(22px,4vh,42px) 0 clamp(26px,5vh,46px);border-top:1px solid var(--line)}
-.clocktop{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:clamp(10px,2vh,18px)}
+.clocktop{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:clamp(16px,2.6vh,26px)}
 .clocktop .big{color:var(--white)}
-.clock{display:grid;grid-template-columns:repeat(4,1fr);align-items:end}
-.unit{padding-left:clamp(10px,2vw,26px)}
+.clock{display:grid;grid-template-columns:repeat(3,1fr);align-items:stretch;gap:0}
+@media(max-width:720px){.clock{grid-template-columns:1fr}}
+.unit{display:flex;flex-direction:column;padding-left:clamp(10px,2vw,26px);padding-right:clamp(10px,2vw,22px)}
 .unit + .unit{border-left:1px solid var(--line)}
-.unit .n{
-  font-family:var(--display);font-weight:800;
-  font-size:clamp(3.1rem,12.5vw,10.5rem);line-height:.84;
-  font-variant-numeric:tabular-nums;letter-spacing:-.02em;
+@media(max-width:720px){
+  .unit{padding-left:13px;padding-top:15px;padding-bottom:15px}
+  .unit + .unit{border-left:0;border-top:1px solid var(--line)}
 }
-.unit:last-child .n{color:var(--red)}
-.unit .l{font-family:var(--mono);font-size:clamp(8.5px,1vw,11px);letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-top:10px}
+.unit .st{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:clamp(8.5px,1vw,10.5px);
+  letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.unit .st i{width:7px;height:7px;border-radius:50%;background:var(--muted);flex:none;font-style:normal}
+.unit.done .st i{background:#8f9296}
+.unit.now .st i{background:var(--red);box-shadow:0 0 0 4px rgba(226,35,26,.20)}
+.unit.now .st{color:var(--red)}
+.unit .n{
+  font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(1.22rem,2.75vw,2.05rem);line-height:1.04;letter-spacing:-.005em;margin-top:11px;
+}
+.unit .l{font-family:var(--mono);font-size:clamp(9px,1vw,10.5px);letter-spacing:.06em;
+  color:var(--muted);text-transform:none;margin-top:auto;padding-top:12px;line-height:1.7;max-width:34ch}
+@media(max-width:720px){.unit .l{margin-top:9px;padding-top:0}}
 .cue{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:2}
 .cue i{display:block;width:1px;height:30px;background:var(--red);animation:drop 2.4s infinite}
 @keyframes drop{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
@@ -167,6 +197,10 @@ section{padding:clamp(80px,12vh,150px) var(--gut);position:relative}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .note{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:#55565b;max-width:46ch;line-height:1.7;margin:0}
 .msg{grid-column:1/-1;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--red);min-height:1em;margin:0}
+.already{margin-top:22px;border:1px solid var(--line);border-left:2px solid var(--red);
+  padding:18px clamp(16px,2.4vw,26px);max-width:60ch}
+.already p{margin:0;font-size:.94rem;color:#b9babe;font-weight:200;line-height:1.7}
+.already b{color:var(--white);font-weight:400}
 
 /* ---------- cta + signup sheet ---------- */
 .ctablock{display:flex;align-items:center;justify-content:space-between;gap:26px;flex-wrap:wrap;padding:clamp(26px,3.4vw,40px)}
@@ -232,14 +266,29 @@ footer .tag{line-height:2}
 
   <div class="clockwrap">
     <div class="clocktop">
-      <p class="tag"><span class="dot">/</span> <span data-en="Launch" data-vi="Ra mắt">Launch</span> <span class="big">04.09.2026</span></p>
+      <p class="tag"><span class="dot">/</span> <span data-en="Where the build stands" data-vi="Tiến độ hiện tại">Where the build stands</span></p>
       <p class="tag" data-en="Ho Chi Minh City" data-vi="Thành phố Hồ Chí Minh">Ho Chi Minh City</p>
     </div>
-    <div class="clock" aria-label="Countdown to launch">
-      <div class="unit"><div class="n" data-cd="d">00</div><div class="l" data-en="Days" data-vi="Ngày">Days</div></div>
-      <div class="unit"><div class="n" data-cd="h">00</div><div class="l" data-en="Hours" data-vi="Giờ">Hours</div></div>
-      <div class="unit"><div class="n" data-cd="m">00</div><div class="l" data-en="Minutes" data-vi="Phút">Minutes</div></div>
-      <div class="unit"><div class="n" data-cd="s">00</div><div class="l" data-en="Seconds" data-vi="Giây">Seconds</div></div>
+    <div class="clock" aria-label="Build progress">
+
+      <div class="unit done">
+        <p class="st"><i></i><span data-en="Complete" data-vi="Hoàn thành">Complete</span></p>
+        <div class="n" data-en="Specs published" data-vi="Đã công bố thông số">Specs published</div>
+        <div class="l" data-en="Measured on running test vehicles, not projected." data-vi="Đo trên xe chạy thử thực tế, không phải ước tính.">Measured on running test vehicles, not projected.</div>
+      </div>
+
+      <div class="unit now">
+        <p class="st"><i></i><span data-en="In progress" data-vi="Đang thực hiện">In progress</span></p>
+        <div class="n" data-en="Supplier lock" data-vi="Chốt nhà cung cấp">Supplier lock</div>
+        <div class="l" data-en="Every part closed out before we commit tooling. Tooling is expensive to change." data-vi="Chốt từng chi tiết trước khi đặt khuôn. Khuôn rất tốn kém để sửa.">Every part closed out before we commit tooling. Tooling is expensive to change.</div>
+      </div>
+
+      <div class="unit">
+        <p class="st"><i></i><span data-en="Next" data-vi="Tiếp theo">Next</span></p>
+        <div class="n" data-en="Type approval" data-vi="Chứng nhận kiểu loại">Type approval</div>
+        <div class="l" data-en="No vehicle is delivered in Vietnam without it. We will not name a delivery date before we hold it." data-vi="Không xe nào được giao tại Việt Nam nếu chưa có. Chúng tôi không công bố ngày giao xe trước khi có nó.">No vehicle is delivered in Vietnam without it. We will not name a delivery date before we hold it.</div>
+      </div>
+
     </div>
   </div>
 
@@ -263,7 +312,7 @@ footer .tag{line-height:2}
 
   <div class="stagefoot rv">
     <p class="tag" data-en="Illustrative outline" data-vi="Hình phác thảo minh họa">Illustrative outline</p>
-    <p class="tag"><span class="dot" data-en="FULL REVEAL" data-vi="CÔNG BỐ ĐẦY ĐỦ">FULL REVEAL</span> 04.09.2026</p>
+    <p class="tag"><span class="dot" data-en="FULL REVEAL TO THE LIST FIRST" data-vi="CÔNG BỐ CHO DANH SÁCH ĐĂNG KÝ TRƯỚC">FULL REVEAL TO THE LIST FIRST</span></p>
   </div>
 </section>
 
@@ -272,11 +321,11 @@ footer .tag{line-height:2}
   <div class="rv" style="margin-bottom:clamp(30px,5vh,58px)">
     <p class="tag"><span class="dot">/</span> <span data-en="Get in line" data-vi="Đăng ký">Get in line</span></p>
     <h2 class="h" data-en="Be first through the door" data-vi="Là người đầu tiên bước vào">Be first through the door</h2>
-    <p class="lede" data-en="Leave your name and we come to you before the public announcement. Full specification, price, and early access, ahead of general release." data-vi="Để lại thông tin và chúng tôi sẽ liên hệ trước khi công bố rộng rãi. Thông số đầy đủ, giá bán và quyền tiếp cận sớm, trước khi mở bán công khai.">Leave your name and we come to you before the public announcement. Full specification, price, and early access, ahead of general release.</p>
+    <p class="lede" data-en="Leave your details and we come to you before the public announcement. Full specification, price, and the order window, ahead of general release." data-vi="Để lại thông tin và chúng tôi sẽ liên hệ trước khi công bố rộng rãi. Thông số đầy đủ, giá bán và thời điểm mở đặt hàng, trước khi công bố công khai.">Leave your details and we come to you before the public announcement. Full specification, price, and the order window, ahead of general release.</p>
     <div class="perks">
       <span class="perk"><b>01</b><span data-en="First look at the full spec" data-vi="Xem thông số đầy đủ trước tiên">First look at the full spec</span></span>
       <span class="perk"><b>02</b><span data-en="Know the price first" data-vi="Biết giá trước">Know the price first</span></span>
-      <span class="perk"><b>03</b><span data-en="Priority in the queue" data-vi="Ưu tiên trong hàng đợi">Priority in the queue</span></span>
+      <span class="perk"><b>03</b><span data-en="First claim on a rider slot in the first batch" data-vi="Ưu tiên giữ suất người dùng cá nhân trong lô đầu tiên">First claim on a rider slot in the first batch</span></span>
     </div>
   </div>
 
@@ -289,6 +338,10 @@ footer .tag{line-height:2}
       <p class="note" data-en="We use this to contact you about the Volty U1 only. Handled under Decree 13/2023 on personal data protection. You can ask us to delete it at any time." data-vi="Chúng tôi chỉ dùng thông tin này để liên hệ về Volty U1. Xử lý theo Nghị định 13/2023 về bảo vệ dữ liệu cá nhân. Bạn có thể yêu cầu xóa bất cứ lúc nào.">We use this to contact you about the Volty U1 only. Handled under Decree 13/2023 on personal data protection. You can ask us to delete it at any time.</p>
     </div>
   </div>
+
+  <div class="already rv">
+    <p data-en="<b>Already signed up?</b> There is nothing more for you to do. You are on the list, and you get the full specification and the order window before either goes public. We will not fill your inbox in between." data-vi="<b>Đã đăng ký rồi?</b> Bạn không cần làm gì thêm. Tên bạn đã có trong danh sách, và bạn sẽ nhận được thông số đầy đủ cùng thời điểm mở đặt hàng trước khi công bố rộng rãi. Giữa hai lần đó, chúng tôi sẽ không làm phiền hộp thư của bạn."><b>Already signed up?</b> There is nothing more for you to do. You are on the list, and you get the full specification and the order window before either goes public. We will not fill your inbox in between.</p>
+  </div>
 </section>
 
 <footer>
@@ -297,7 +350,7 @@ footer .tag{line-height:2}
     <p class="tag">NUEN MOTO COMPANY LIMITED<br>TAX ID 0317847638<br>THU DUC, HO CHI MINH CITY</p>
   </div>
   <div style="text-align:right">
-    <p class="tag">04.09.2026</p>
+    <p class="tag"><a href="mailto:hello@volty.info" style="color:inherit;text-decoration:none">HELLO@VOLTY.INFO</a></p>
     <p class="tag" style="color:#3f4045">&copy; 2026 NUEN MOTO CO., LTD</p>
   </div>
 </footer>
@@ -324,7 +377,9 @@ footer .tag{line-height:2}
 /* ============================================================
    EDIT BEFORE PUBLISHING
    ============================================================ */
-var LAUNCH = new Date("2026-09-04T09:00:00+07:00");
+/* The LAUNCH date and its countdown were removed on purpose. Do not put a
+   clock back on this page unless the date behind it is contractually fixed.
+   The previous one expired at 09:00 ICT on 04.09.2026 and sat at 00 00 00 00. */
 
 /* Paste the share link from your Lark Base form view here. Nothing else to configure. */
 var LARK_FORM_URL = "https://ajtl41ifn3x.sg.larksuite.com/share/base/form/shrlg3QWYnTF3EBPxtNTbE2Zwnh";
@@ -360,22 +415,6 @@ var io = new IntersectionObserver(function(entries){
 }, {threshold:.16});
 var rvs = document.querySelectorAll(".rv");
 for(var r=0;r<rvs.length;r++) io.observe(rvs[r]);
-
-/* ---------- countdown ---------- */
-function pad(n){ return n < 10 ? "0" + n : "" + n; }
-function tick(){
-  var diff = Math.max(0, LAUNCH - new Date());
-  var s = Math.floor(diff/1000);
-  var d = Math.floor(s/86400); s -= d*86400;
-  var h = Math.floor(s/3600);  s -= h*3600;
-  var m = Math.floor(s/60);    s -= m*60;
-  var map = {d:pad(d), h:pad(h), m:pad(m), s:pad(s)};
-  ["d","h","m","s"].forEach(function(k){
-    var el = document.querySelector('[data-cd="'+k+'"]');
-    if(el && el.textContent !== map[k]) el.textContent = map[k];
-  });
-}
-tick(); setInterval(tick, 1000);
 
 /* ---------- hero field ---------- */
 var cv = document.getElementById("field"), cx = cv.getContext("2d");

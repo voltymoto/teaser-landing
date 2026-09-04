@@ -1,8 +1,16 @@
+# Removing the Disallow lines is deliberate.
+#
+# robots.txt is public and machine readable. The previous version listed
+# business-plan.html, financials.html, fleet-economics.html and fleet-tco.html
+# by name. Disallow is a request to crawlers, not access control, so that list
+# functioned as a directory of the four files most worth taking, published at a
+# URL anyone can open.
+#
+# Those files must be moved off this host or protected at the server (Netlify
+# Identity, or basic auth via a _headers rule). Until they are, they are
+# reachable whatever this file says.
+
 User-agent: *
-Allow: /$
-Disallow: /business-plan.html
-Disallow: /financials.html
-Disallow: /fleet-economics.html
-Disallow: /fleet-tco.html
+Allow: /
 
 Sitemap: https://volty.info/sitemap.xml
