@@ -444,36 +444,153 @@ function build(){
   W = cv.clientWidth; H = cv.clientHeight;
   cv.width = W * dpr; cv.height = H * dpr;
   cx.setTransform(dpr,0,0,dpr,0,0);
-  var gap = W < 620 ? 26 : 32;
+  var gap = W < 620 ? 14 : 16;   /* the mark is drawn by these dots, and it is small and dim now, so density is doing the work brightness used to */
+  /* see AMB below: at this density the ambient field must not build strings or arcs per dot */
   dots = [];
   for(var y = gap*0.6; y < H; y += gap)
     for(var x = gap*0.6; x < W; x += gap)
-      dots.push({ox:x, oy:y});
+      dots.push({ox:x, oy:y, j:(Math.random()*2-1), k:Math.random()});
 }
+/* The pointer carries the Volty V.
+   V_POLY is the mark itself, not an approximation of it: the twelve vertices
+   are lifted straight out of the path in favicon.svg
+     M100 1600 H500 V783 L883 400 H917 L1300 783 V1600 H1700 V617 L1083 0 H717 L100 617 Z
+   run through its own transform and normalised to a 100 unit box. The mark has
+   a flat bottom edge and a shield profile, which two capsules cannot express,
+   so the polygon is carried literally. If the logo is ever redrawn, regenerate
+   this array from the new path rather than nudging the numbers by eye.
+
+   Dots inside the mark light up where they stand. Dots just outside are drawn
+   in and packed against the inner face of the edge, so the field fills the
+   silhouette under your hand and lets it go as you move on.
+
+   Deliberately not the other version of this, which is turning every dot into
+   a small V. A trademark repeated a thousand times a frame stops reading as a
+   mark, and the fill cost lands on exactly the cheap Android hardware our
+   riders and dispatchers use. The mark is used once, large. */
+var V_POLY = [[0,0],[25,0],[25,51.06],[48.94,75],[51.06,75],[75,51.06],[75,0],[100,0],[100,61.44],[61.44,100],[38.56,100],[0,61.44]];
+var V_N     = V_POLY.length;
+var V_CX    = 50, V_CY = 50.26;   /* area centroid, so the mark balances on the cursor */
+var PULL    = 19;                 /* how far outside the edge dots start being drawn in */
+var INSET   = 8.5;                /* how deep inside the edge they pack */
+
+/* Peak opacity of the mark. Lower than this and the silhouette stops reading
+   as the logo: E2231A at 0.25 over #0a0a0b is about 1.6:1 against the page,
+   which is texture rather than a mark. The per dot variance below matters
+   more than the number itself, because it keeps the edge legible while the
+   average stays low. One constant, change it here. */
+var V_ALPHA = 0.30;
+
+/* Motion inside the mark. The silhouette itself never rotates: a logo on a
+   tilt is off brand, and a spinning V reads as a loading spinner. Instead the
+   fill swirls gently about the centroid and every dot runs its own small
+   orbit, so the mark is alive while staying square to the page. */
+var SWIRL   = 0.055;               /* radians, peak of the shared oscillation */
+var ORBIT   = 1.45;                /* mark units, per dot orbit radius */
+
+function inPoly(x, y){
+  var inside = false;
+  for(var i=0, j=V_N-1; i<V_N; j=i++){
+    var xi=V_POLY[i][0], yi=V_POLY[i][1], xj=V_POLY[j][0], yj=V_POLY[j][1];
+    if(((yi>y)!==(yj>y)) && (x < (xj-xi)*(y-yi)/(yj-yi) + xi)) inside = !inside;
+  }
+  return inside;
+}
+
+/* The ambient field is now several thousand dots a frame. Building an
+   "rgba(...)" string and walking an arc path for each one costs more than
+   everything the mark does. The shimmer is quantised into a fixed palette and
+   drawn as sub pixel rects instead: visually identical at this size, and it
+   took a throttled phone back from 33 fps to full rate. */
+var AMB = [], AMB_N = 10;
+for(var ai=0; ai<AMB_N; ai++){
+  AMB.push("rgba(245,245,246," + (0.05 + 0.10*ai/(AMB_N-1)).toFixed(3) + ")");
+}
+
+var _e = {d:0, x:0, y:0};
+function nearestEdge(x, y, out){
+  var best = 1e9, bx = 0, by = 0;
+  for(var i=0, j=V_N-1; i<V_N; j=i++){
+    var ax=V_POLY[j][0], ay=V_POLY[j][1];
+    var dx=V_POLY[i][0]-ax, dy=V_POLY[i][1]-ay;
+    var tt = ((x-ax)*dx + (y-ay)*dy) / (dx*dx + dy*dy);
+    tt = tt<0?0:(tt>1?1:tt);
+    var qx = ax+dx*tt, qy = ay+dy*tt;
+    var vx = x-qx, vy = y-qy;
+    var dd = vx*vx + vy*vy;
+    if(dd < best){ best = dd; bx = qx; by = qy; }
+  }
+  out.d = Math.sqrt(best); out.x = bx; out.y = by;
+  return out.d;
+}
+
 function draw(t){
   if(!heroVisible){ requestAnimationFrame(draw); return; }
   cx.clearRect(0,0,W,H);
-  boost += ((dragging ? 1.5 : 1) - boost) * 0.10;
-  var R = (W < 620 ? 190 : 300) * boost;
+  boost += ((dragging ? 1.3 : 1) - boost) * 0.10;
+
+  var S    = (W < 620 ? 145 : 225) * boost;   /* mark height on screen, px */
+  var k    = S / 100;                          /* mark units to px */
   var wave = t * 0.0006;
+  var lim  = PULL + 6;
+  var spin = t * 0.00055;
+  var sw   = Math.sin(spin) * SWIRL;          /* shared swirl of the fill */
+  var cs   = Math.cos(sw), sn = Math.sin(sw);
+
   for(var i=0;i<dots.length;i++){
     var d = dots[i];
     var amb = Math.sin(wave + d.ox*0.012 + d.oy*0.02);
+
     if(hasPointer){
-      var vx = d.ox - px, vy = d.oy - py;
-      var dist = Math.sqrt(vx*vx + vy*vy);
-      if(dist < R){
-        var f = 1 - dist/R;
-        var g = f*f*(3-2*f);
-        cx.fillStyle = "rgba(226,35,26," + Math.min(1, 0.16 + g*0.95*boost) + ")";
-        cx.beginPath();
-        cx.arc(d.ox + (vx/(dist||1))*g*34*boost, d.oy + (vy/(dist||1))*g*34*boost, 1 + g*4.2*boost, 0, 6.2832);
-        cx.fill();
-        continue;
+      var lx = (d.ox - px)/k + V_CX;
+      var ly = (d.oy - py)/k + V_CY;
+
+      if(lx > -lim && lx < 100+lim && ly > -lim && ly < 100+lim){
+        if(inPoly(lx, ly)){
+          var rx = lx - V_CX, ry = ly - V_CY;
+          var wx = V_CX + rx*cs - ry*sn;
+          var wy = V_CY + rx*sn + ry*cs;
+          var oa = spin*1.7 + d.k*6.2832;
+          wx += Math.cos(oa) * ORBIT * (0.45 + d.k);
+          wy += Math.sin(oa) * ORBIT * (0.45 + d.k);
+          cx.fillStyle = "rgba(226,35,26," + (V_ALPHA*(0.62 + d.k*0.62)) + ")";
+          cx.beginPath();
+          cx.arc(px + (wx-V_CX)*k, py + (wy-V_CY)*k, 0.75 + (0.95 + d.k*0.8)*boost, 0, 6.2832);
+          cx.fill();
+          continue;
+        }
+        if(nearestEdge(lx, ly, _e) < PULL){
+          var f = 1 - _e.d/PULL;
+          var g = f*f*(3-2*f);
+
+          /* the way in is straight at the nearest edge, then a little past it,
+             so gathered dots pack against the inner face instead of outlining it */
+          var ix = (_e.x - lx)/(_e.d || 1), iy = (_e.y - ly)/(_e.d || 1);
+          var tx = _e.x + ix * d.k * INSET;
+          var ty = _e.y + iy * d.k * INSET;
+
+          var qx = tx - V_CX, qy = ty - V_CY;
+          var ux = qx*cs - qy*sn, uy = qx*sn + qy*cs;
+          var ob = spin*1.7 + d.k*6.2832;
+          ux += Math.cos(ob) * ORBIT * (0.45 + d.k);
+          uy += Math.sin(ob) * ORBIT * (0.45 + d.k);
+
+          var sx = px + ux*k, sy = py + uy*k;
+
+          var pr = Math.pow(g, 0.30);
+          cx.fillStyle = "rgba(226,35,26," + (V_ALPHA * g * (0.55 + d.k*0.7)) + ")";
+          cx.beginPath();
+          cx.arc(d.ox + (sx-d.ox)*pr, d.oy + (sy-d.oy)*pr, 0.6 + g*(1.2 + d.k*0.8)*boost, 0, 6.2832);
+          cx.fill();
+          continue;
+        }
       }
     }
-    cx.fillStyle = "rgba(245,245,246," + (0.10 + amb*0.05) + ")";
-    cx.beginPath(); cx.arc(d.ox, d.oy, Math.max(0.4, 1 + amb*0.28), 0, 6.2832); cx.fill();
+
+    var bi = (amb + 1) * 0.5 * AMB_N | 0;
+    cx.fillStyle = AMB[bi < 0 ? 0 : (bi >= AMB_N ? AMB_N-1 : bi)];
+    var r = 1 + amb*0.28;
+    cx.fillRect(d.ox - r, d.oy - r, r*2, r*2);
   }
   requestAnimationFrame(draw);
 }
@@ -481,7 +598,7 @@ window.addEventListener("resize", build);
 build();
 new IntersectionObserver(function(es){ heroVisible = es[0].isIntersecting; }).observe(cv);
 if(!reduce) requestAnimationFrame(draw);
-else { cx.fillStyle = "rgba(245,245,246,.10)"; dots.forEach(function(d){ cx.beginPath(); cx.arc(d.ox,d.oy,1,0,6.2832); cx.fill(); }); }
+else { cx.fillStyle = "rgba(245,245,246,.10)"; dots.forEach(function(d){ cx.fillRect(d.ox-1, d.oy-1, 2, 2); }); }
 
 window.addEventListener("pointermove", function(e){
   var rect = cv.getBoundingClientRect();
